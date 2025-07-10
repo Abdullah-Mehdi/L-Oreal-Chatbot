@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat Assistant</title>
+    <title>L'Oréal Beauty Assistant</title>
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
@@ -19,8 +19,42 @@
     <div class="page-wrapper">
       <!------- Header / Branding ------->
       <header class="site-header">
-        <h1 class="site-title">Smart Product Advisor</h1>
+        <button
+          id="contextToggle"
+          class="context-toggle"
+          title="Toggle User Profile"
+        >
+          👤 Profile
+        </button>
+        <div class="brand-container">
+          <img
+            src="img/loreal-logo.png"
+            alt="L'Oréal Paris"
+            class="brand-logo"
+          />
+          <h1 class="site-title">Beauty Assistant</h1>
+          <p class="brand-tagline">Because You're Worth It</p>
+        </div>
       </header>
+
+      <!------- User Context Panel (Optional Display) ------->
+      <div id="userContextPanel" class="user-context-panel hidden">
+        <h3>
+          <span class="material-icons" style="font-size: 16px">person</span>
+          Your Beauty Profile
+        </h3>
+        <div id="userProfileDisplay">
+          <!-- Profile information will be populated by JavaScript -->
+        </div>
+        <div id="personalizationStatus" class="personalization-status">
+          ✨ Personalized Experience Active
+        </div>
+        <div class="privacy-controls">
+          <button id="clearDataBtn" title="Clear all saved data for privacy">
+            🗑️ Clear My Data
+          </button>
+        </div>
+      </div>
 
       <!------- Chat Area ------->
       <main>
@@ -35,7 +69,7 @@
               id="userInput"
               name="userInput"
               type="text"
-              placeholder="Ask me about products or routines…"
+              placeholder="Ask me about beauty products, skincare routines, or makeup tips…"
               autocomplete="off"
               required
             />
@@ -49,18 +83,56 @@
 
       <!------- Footer Links ------->
       <footer class="site-footer">
-        <p>&copy; 2025 Company Name. All rights reserved.</p>
+        <p>&copy; 2025 L'Oréal Paris. All rights reserved.</p>
         <nav>
           <!-- These URLs are placeholders -->
           <a href="#">Privacy Policy</a>
           <a href="#">Terms of Use</a>
           <a href="#">Contact</a>
+          <a href="#">L'Oréal Paris</a>
         </nav>
       </footer>
     </div>
 
-    <!-- secrets.js can be removed when using Cloudflare Workers for API requests -->
-    <script src="secrets.js"></script>
+    <!-- Configuration -->
+    <script>
+      // Inline configuration to ensure it loads
+      const API_CONFIG = {
+        endpoint: "https://loreal-worker.thetrueqwerty97.workers.dev/",
+        model: "gpt-4o",
+        maxTokens: 500,
+        temperature: 0.7,
+      };
+
+      const LOREAL_SYSTEM_PROMPT = `You are the L'Oréal Beauty Assistant, an expert beauty consultant representing L'Oréal Paris. Your role is to help customers discover the perfect beauty products and create personalized routines.
+
+## Your Expertise:
+- L'Oréal Paris product recommendations (skincare, makeup, hair care)
+- Beauty routines and application techniques
+- Color matching and trend advice
+- Skin type analysis and product selection
+- Makeup tutorials and tips
+- Hair care solutions and styling advice
+
+## Your Personality:
+- Professional yet friendly and approachable
+- Confident in beauty expertise
+- Encouraging and empowering
+- Use L'Oréal's brand voice: "Because You're Worth It"
+
+## Important Guidelines:
+1. ONLY answer questions related to beauty, skincare, makeup, hair care, and L'Oréal products
+2. If asked about non-beauty topics, politely redirect: "I'm here to help you with beauty and L'Oréal products. How can I assist you with your beauty routine today?"
+3. Always promote L'Oréal products when appropriate
+4. Provide specific, actionable beauty advice
+5. Encourage users to feel confident and beautiful
+6. Keep responses conversational and engaging
+7. Use beauty emojis appropriately (💄, ✨, 🌟, 💅, etc.)
+
+Remember: You represent L'Oréal Paris, so embody their values of inclusivity, empowerment, and beauty for everyone.`;
+    </script>
+
+    <!-- Main application script -->
     <script src="script.js"></script>
   </body>
 </html>
