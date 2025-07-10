@@ -397,12 +397,25 @@ function setupFormHandler() {
 }
 
 /**
- * Display a message in the chat
+ * Display a message in the chat with enhanced styling
  */
 function displayMessage(message, sender) {
   const messageDiv = document.createElement("div");
   messageDiv.className = `msg ${sender}`;
   messageDiv.textContent = message;
+
+  // Add timestamp for better chat experience
+  if (sender === "user" || sender === "ai") {
+    const timestamp = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const statusDiv = document.createElement("div");
+    statusDiv.className = "message-status";
+    statusDiv.textContent = timestamp;
+    messageDiv.appendChild(statusDiv);
+  }
+
   chatWindow.appendChild(messageDiv);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
@@ -424,6 +437,16 @@ function displayAIResponseWithQuestion(userQuestion, aiResponse) {
   const aiMessageDiv = document.createElement("div");
   aiMessageDiv.className = "msg ai";
   aiMessageDiv.textContent = aiResponse;
+
+  // Add timestamp to AI response
+  const timestamp = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const statusDiv = document.createElement("div");
+  statusDiv.className = "message-status";
+  statusDiv.textContent = timestamp;
+  aiMessageDiv.appendChild(statusDiv);
 
   // Append question reminder and AI response to container
   responseContainer.appendChild(questionReminder);
@@ -459,13 +482,22 @@ async function sendToAPIWithContext(userMessage) {
       temperature: API_CONFIG.temperature,
     };
 
-    // Show loading message
+    // Show enhanced loading message with typing indicator
     const loadingDiv = document.createElement("div");
     loadingDiv.className = "msg ai loading";
     loadingDiv.id = "loading-message";
-    loadingDiv.textContent = userProfile.name
-      ? `✨ Let me find the perfect advice for you, ${userProfile.name}...`
-      : "✨ Let me find the perfect beauty advice for you...";
+
+    const loadingText = document.createElement("span");
+    loadingText.textContent = userProfile.name
+      ? `✨ Let me find the perfect advice for you, ${userProfile.name}`
+      : "✨ Let me find the perfect beauty advice for you";
+
+    const typingIndicator = document.createElement("div");
+    typingIndicator.className = "typing-indicator";
+    typingIndicator.innerHTML = "<span></span><span></span><span></span>";
+
+    loadingDiv.appendChild(loadingText);
+    loadingDiv.appendChild(typingIndicator);
     chatWindow.appendChild(loadingDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 

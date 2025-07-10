@@ -121,13 +121,16 @@ body {
   min-height: 400px;
   border: 2px solid var(--loreal-border);
   border-radius: 12px;
-  padding: 30px;
+  padding: 25px 20px;
   font-size: 16px;
   line-height: 1.6;
   overflow-y: auto;
-  background: var(--loreal-light-gray);
+  background: #fafbfc;
   white-space: pre-line;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 /* —— Message Container Clearfix —— */
@@ -143,27 +146,50 @@ body {
   clear: both;
 }
 
-/* —— Messages —— */
+/* —— Modern Chat Bubble Messages —— */
 .msg {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   line-height: 1.5;
-  padding: 14px 18px;
-  border-radius: 18px;
-  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 20px;
+  max-width: 75%;
   word-wrap: break-word;
-  display: inline-block;
+  display: block;
   clear: both;
+  position: relative;
+  font-size: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  animation: messageSlideIn 0.3s ease-out;
+  transform-origin: bottom;
 }
 
+/* User Messages - Right aligned with tail */
 .msg.user {
   background: linear-gradient(135deg, var(--loreal-red) 0%, #c4001a 100%);
   color: var(--loreal-white);
   float: right;
-  text-align: right;
+  text-align: left;
   border-bottom-right-radius: 6px;
-  box-shadow: 0 2px 12px rgba(229, 0, 25, 0.3);
+  margin-left: auto;
+  margin-right: 0;
+  box-shadow: 0 3px 15px rgba(229, 0, 25, 0.3);
 }
 
+/* User message tail */
+.msg.user::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-left-color: #c4001a;
+  border-bottom: 0;
+  transform: rotate(15deg);
+}
+
+/* AI Messages - Left aligned with tail */
 .msg.ai {
   background: var(--loreal-white);
   color: var(--loreal-black);
@@ -171,7 +197,42 @@ body {
   float: left;
   text-align: left;
   border-bottom-left-radius: 6px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  margin-left: 0;
+  margin-right: auto;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* AI message tail */
+.msg.ai::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -9px;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-right-color: var(--loreal-white);
+  border-bottom: 0;
+  transform: rotate(-15deg);
+}
+
+/* Message spacing and conversation flow */
+.msg + .msg {
+  margin-top: 8px;
+}
+
+.msg.user + .msg.ai,
+.msg.ai + .msg.user {
+  margin-top: 20px;
+}
+
+/* Message timestamps (optional enhancement) */
+.msg-timestamp {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 4px;
+  text-align: center;
+  font-style: italic;
 }
 
 /* —— Enhanced Message Styling —— */
@@ -593,12 +654,34 @@ body {
 @media (max-width: 480px) {
   .msg {
     font-size: 14px;
-    padding: 10px 12px;
+    padding: 10px 14px;
+    max-width: 85%;
+    border-radius: 16px;
+  }
+
+  .msg.user {
+    border-bottom-right-radius: 4px;
+  }
+
+  .msg.ai {
+    border-bottom-left-radius: 4px;
+  }
+
+  /* Adjust tails for mobile */
+  .msg.user::after {
+    right: -6px;
+    border-width: 6px;
+  }
+
+  .msg.ai::after {
+    left: -7px;
+    border-width: 6px;
   }
 
   .chat-window {
     font-size: 14px;
     min-height: 250px;
+    padding: 15px 10px;
   }
 
   .chatbox {
@@ -717,16 +800,27 @@ main {
   );
   border-left: 3px solid var(--loreal-red);
   color: var(--loreal-gray);
-  font-size: 14px;
+  font-size: 13px;
   font-style: italic;
-  padding: 10px 14px;
-  margin-bottom: 8px;
-  border-radius: 6px 12px 6px 6px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  border-radius: 12px 12px 12px 4px;
   clear: both;
-  max-width: 85%;
+  max-width: 75%;
   float: left;
   position: relative;
-  box-shadow: 0 1px 3px rgba(229, 0, 25, 0.1);
+  box-shadow: 0 1px 4px rgba(229, 0, 25, 0.15);
+  margin-left: 0;
+}
+
+.user-question-reminder::before {
+  content: "Your question: ";
+  font-weight: 600;
+  color: var(--loreal-red);
+  font-style: normal;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
 }
 
 .user-question-reminder::before {
@@ -742,4 +836,142 @@ main {
 .ai-response-container {
   clear: both;
   margin-bottom: 20px;
+}
+
+/* —— Chat Experience Enhancements —— */
+
+/* Smooth message appearance animation */
+.msg {
+  animation: messageSlideIn 0.3s ease-out;
+  transform-origin: bottom;
+}
+
+@keyframes messageSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced loading message */
+.msg.loading {
+  background: #f8f9fa;
+  border: 1px dashed var(--loreal-border);
+  color: var(--loreal-gray);
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+}
+
+.msg.loading::after {
+  border-right-color: #f8f9fa;
+}
+
+/* Message status indicators */
+.message-status {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+  text-align: right;
+}
+
+.msg.ai .message-status {
+  color: var(--loreal-gray);
+  text-align: left;
+}
+
+/* Conversation grouping */
+.conversation-group {
+  margin-bottom: 20px;
+}
+
+.conversation-group:last-child {
+  margin-bottom: 0;
+}
+
+/* —— Conversation Flow Enhancements —— */
+
+/* Better spacing between conversation turns */
+.chat-window > .msg:first-child,
+.chat-window > .ai-response-container:first-child {
+  margin-top: 10px;
+}
+
+.chat-window > .msg:last-child,
+.chat-window > .ai-response-container:last-child {
+  margin-bottom: 10px;
+}
+
+/* Visual indicators for new conversation turns */
+.conversation-break {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--loreal-border) 50%,
+    transparent 100%
+  );
+  margin: 20px 0;
+  opacity: 0.5;
+}
+
+/* Enhanced clearfix for complex layouts */
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-window > * {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.msg.user {
+  justify-self: flex-end;
+  align-self: flex-end;
+}
+
+.msg.ai,
+.ai-response-container {
+  justify-self: flex-start;
+  align-self: flex-start;
+}
+
+/* —— Footer Styling —— */
+.site-footer {
+  background: var(--loreal-light-gray);
+  border-top: 1px solid var(--loreal-border);
+  padding: 20px 40px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--loreal-gray);
+  margin-top: auto; /* Push footer to bottom */
+}
+
+.site-footer p {
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.site-footer nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.site-footer nav a {
+  color: var(--loreal-gray);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 13px;
+}
+
+.site-footer nav a:hover {
+  color: var(--loreal-red);
 }
