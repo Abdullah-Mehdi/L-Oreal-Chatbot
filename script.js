@@ -408,6 +408,33 @@ function displayMessage(message, sender) {
 }
 
 /**
+ * Display AI response with user question reminder above it
+ */
+function displayAIResponseWithQuestion(userQuestion, aiResponse) {
+  // Create container for the AI response block
+  const responseContainer = document.createElement("div");
+  responseContainer.className = "ai-response-container";
+
+  // Create user question reminder
+  const questionReminder = document.createElement("div");
+  questionReminder.className = "user-question-reminder";
+  questionReminder.textContent = userQuestion;
+
+  // Create AI response message
+  const aiMessageDiv = document.createElement("div");
+  aiMessageDiv.className = "msg ai";
+  aiMessageDiv.textContent = aiResponse;
+
+  // Append question reminder and AI response to container
+  responseContainer.appendChild(questionReminder);
+  responseContainer.appendChild(aiMessageDiv);
+
+  // Add container to chat window
+  chatWindow.appendChild(responseContainer);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+/**
  * Enhanced send to API with conversation context
  */
 async function sendToAPIWithContext(userMessage) {
@@ -488,8 +515,8 @@ async function sendToAPIWithContext(userMessage) {
     // Update context display
     updateContextDisplay();
 
-    // Display AI response
-    displayMessage(aiResponse, "ai");
+    // Display AI response with user question reminder
+    displayAIResponseWithQuestion(userMessage, aiResponse);
 
     // Update placeholder text based on conversation
     updateInputPlaceholder();
